@@ -1,26 +1,29 @@
-pipeline {
+  pipeline {
+    agent any
 
-  agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the repository
+                checkout scm
+            }
+        }
 
-  stages {
-
-    stage('Checkout Source') {
-      steps {
-        git 'https://github.com/sd2899/website.git'
-      }
-    }
-
-    stage('Build image') {
-      agent { 
+        stage('Build') {
+            agent { 
                 dockerfile true 
             }
-      steps{
-        script {
-          sudo docker build . -t demoapp
+            steps { 
+            	if (env.BRANCH_NAME == 'master') {
+            		sh 'docker build -t my-apache-server .'
+                       sh 'docker run -d -p 82:80 my-apache-server'
+                } 
+                else if (env.BRANCH_NAME == 'develop') {
+                	sh 'my-apache-server:develop'
+                }
+            }
         }
-      }
-    }
-
+      
     stage('Kubernetes build') {
       steps {
         script {
