@@ -11,6 +11,9 @@ pipeline {
     }
 
     stage('Build image') {
+      agent { 
+                dockerfile true 
+            }
       steps{
         script {
           sudo docker build . -t demoapp
