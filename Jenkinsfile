@@ -1,0 +1,31 @@
+pipeline {
+
+  agent any
+
+  stages {
+
+    stage('Checkout Source') {
+      steps {
+        git 'https://github.com/sd2899/website.git'
+      }
+    }
+
+    stage('Build image') {
+      steps{
+        script {
+          sudo docker build . -t demoapp
+        }
+      }
+    }
+
+    stage('Kubernetes build') {
+      steps {
+        script {
+          kubernetesDeploy(configs: "kubedeploy.yml", "service.yml")
+        }
+      }
+    }
+
+  }
+
+}
