@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: myapp-cont
-        image: nginx:latest
+        image: sandy2800/udockerimg
         ports:
         - containerPort: 80
 
